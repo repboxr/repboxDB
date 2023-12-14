@@ -1,0 +1,11 @@
+Package: repboxDB
+Type: Package
+Title: Functions to deal with repbox data base (including regdb)
+Version: 0.1
+Author: Sebastian Kranz (Ulm University)
+Maintainer: Sebastian Kranz <sebastian.kranz@uni-ulm.de>
+Description: 
+License: GPL >= 3.0
+Depends: dplyr, restorepoint, stringtools, stringi, yaml, devtools
+Encoding: UTF-8
+LazyData: true
