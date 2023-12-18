@@ -1,10 +1,10 @@
 Package: repboxDB
 Type: Package
-Title: Functions to deal with repbox data base (including regdb)
+Title: Functions for exported repbox data
 Version: 0.1
 Author: Sebastian Kranz (Ulm University)
 Maintainer: Sebastian Kranz <sebastian.kranz@uni-ulm.de>
-Description: 
+Description: Functions for exported repbox data
 License: GPL >= 3.0
 Remotes: skranz/stringtools
 Depends: dplyr, restorepoint, stringtools, stringi, yaml, devtools
