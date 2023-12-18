@@ -28,6 +28,23 @@ get_lib_path = function(lib) {
   si$loadedpath[row]
 }
 
+regdb_spec_files = function(libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
+  restore.point("regdb_load_specs")
+  dir = sapply(libs, function(lib) {
+    d = system.file("regdb",package=lib)
+    # Also detect path if lib was loaded via devtools
+    if (is.null(d) | is.na(d) | d=="") {
+      lib_path = get_lib_path(lib)
+      d = file.path(lib_path,"inst","regdb")
+    }
+    d
+  })
+  spec_files = list.files(dir,glob2rx("*.yml"), full.names = TRUE)
+  spec_files
+
+}
+
+
 regdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
   restore.point("regdb_load_specs")
   if (is.null(dir)) {
