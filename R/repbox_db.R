@@ -2,33 +2,33 @@
 # into regdb tables
 
 example = function() {
-  project.dir = "C:/libraries/repbox/projects_reg/testsupp"
-  project.dir = "~/repbox/projects_reg/aejapp_3_1_3"
-  repbox_to_regdb(project.dir)
+  project_dir = "C:/libraries/repbox/projects_reg/testsupp"
+  project_dir = "~/repbox/projects_reg/aejapp_3_1_3"
+  repbox_to_regdb(project_dir)
 
-  rstudioapi::filesPaneNavigate(project.dir)
+  rstudioapi::filesPaneNavigate(project_dir)
   rstudioapi::filesPaneNavigate("~/repbox/repboxDB/inst/regdb")
 }
 
-repbox_to_regdb = function(project.dir) {
+repbox_to_regdb = function(project_dir) {
   restore.point("repbox_results_to_regdb")
   regdb_load_specs(libs="repboxDB")
-  regdb.dir = file.path(project.dir, "repbox","regdb")
+  regdb.dir = file.path(project_dir, "repbox","regdb")
   if (!dir.exists(regdb.dir)) dir.create(regdb.dir)
-  file_df = repbox_file_to_regdb(project.dir)
-  script_df = regdb_make_stata_script_parcel(project.dir, file_df)
-  parcels = repbox_results_to_regdb(project.dir, script_df)
+  file_df = repbox_file_to_regdb(project_dir)
+  script_df = regdb_make_stata_script_parcel(project_dir, file_df)
+  parcels = repbox_results_to_regdb(project_dir, script_df)
   invisible(parcels)
 }
 
-regdb_make_stata_script_parcel = function(project.dir, file_df) {
+regdb_make_stata_script_parcel = function(project_dir, file_df) {
   restore.point("regdb_make_script_parcels")
 
   script_df = file_df %>%
     ungroup() %>%
     filter(file_type == "do") %>%
     mutate(
-      sup_dir = paste0(project.dir, ifelse(in_org, "/org","/mod")),
+      sup_dir = paste0(project_dir, ifelse(in_org, "/org","/mod")),
       long_path = paste0(sup_dir,"/", file_path ),
       script_num = seq_len(n()),
       file_exists = file.exists(long_path),
@@ -51,18 +51,18 @@ regdb_make_stata_script_parcel = function(project.dir, file_df) {
     stata_file = list(script_file=script_df),
     stata_source = list(script_source = script_df)
   )
-  regdb_save_parcels(parcels, dir = file.path(project.dir, "repbox", "regdb") )
+  regdb_save_parcels(parcels, dir = file.path(project_dir, "repbox", "regdb") )
   return(script_df)
 }
 
-repbox_results_to_regdb = function(project.dir, script_df) {
+repbox_results_to_regdb = function(project_dir, script_df) {
   restore.point("repbox_results_to_regdb")
 
   parcels = list()
 
-  artid = basename(project.dir)
+  artid = basename(project_dir)
 
-  results.file = file.path(project.dir, "repbox", "stata","repbox_results.Rds")
+  results.file = file.path(project_dir, "repbox", "stata","repbox_results.Rds")
   res = readRDS.or.null(results.file)
 
   if (is.null(res)) {
@@ -99,7 +99,7 @@ repbox_results_to_regdb = function(project.dir, script_df) {
   run_df = res$run.df %>%
     mutate(
       artid = artid,
-      found_path = file_path_relative_to_supp(foundfile, paste0("/", artid, "/mod/"),wdir = wdir, supp.dir = paste0(project.dir, "/", artid, "/mod/"))
+      found_path = file_path_relative_to_supp(foundfile, paste0("/", artid, "/mod/"),wdir = wdir, supp.dir = paste0(project_dir, "/", artid, "/mod/"))
     ) %>%
     rename(
 
@@ -122,16 +122,16 @@ repbox_results_to_regdb = function(project.dir, script_df) {
   parcels$stata_run_cmd = list(stata_run_cmd = run_df)
   parcels$stata_run_log = list(stata_run_log = run_df)
 
-  regdb_save_parcels(parcels, dir = file.path(project.dir, "repbox", "regdb") )
+  regdb_save_parcels(parcels, dir = file.path(project_dir, "repbox", "regdb") )
   invisible(parcels)
 }
 
-repbox_file_to_regdb = function(project.dir, ignore="repbox_") {
+repbox_file_to_regdb = function(project_dir, ignore="repbox_") {
   restore.point("repbox_file_to_regdb")
 
-  artid = basename(project.dir)
-  org_files = readRDS.or.null(file.path(project.dir, "repbox","org_files.Rds"))
-  mod_files = readRDS.or.null(file.path(project.dir, "repbox","mod_files.Rds"))
+  artid = basename(project_dir)
+  org_files = readRDS.or.null(file.path(project_dir, "repbox","org_files.Rds"))
+  mod_files = readRDS.or.null(file.path(project_dir, "repbox","mod_files.Rds"))
 
   file_df = bind_rows(
     mutate(org_files, type="org"),
@@ -163,7 +163,7 @@ repbox_file_to_regdb = function(project.dir, ignore="repbox_") {
     rename(file_path = file)
 
   parcels = list(repbox_file = list(repbox_file=file_df))
-  regdb_save_parcels(parcels,dir = file.path(project.dir, "repbox", "regdb"))
+  regdb_save_parcels(parcels,dir = file.path(project_dir, "repbox", "regdb"))
   invisible(file_df)
 }
 
