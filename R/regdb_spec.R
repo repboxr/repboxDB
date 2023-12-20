@@ -1,20 +1,20 @@
-regdb_null_to_empty = function(df, table) {
+repdb_null_to_empty = function(df, table) {
   if (!is.null(df)) return(df)
-  spec = spec = regdb_get_spec(table)
+  spec = spec = repdb_get_spec(table)
   dbspec_make_empty(spec)
 }
 
 
 
-regdb_field_names = function(table) {
-  regdb_get_spec(table)$fields$field
+repdb_field_names = function(table) {
+  repdb_get_spec(table)$fields$field
 }
 
-regdb_get_spec = function(table) {
-  #restore.point("regdb_get_spec")
-  specs = getOption("regdb.specs")
-  if (!table %in% names(specs)) regdb_load_specs()
-  specs = getOption("regdb.specs")
+repdb_get_spec = function(table) {
+  #restore.point("repdb_get_spec")
+  specs = getOption("repdb.specs")
+  if (!table %in% names(specs)) repdb_load_specs()
+  specs = getOption("repdb.specs")
   spec = specs[[table]]
   if (is.null(spec)) {
     stop("The specification for table ", table, " was not loaded.")
@@ -28,14 +28,14 @@ get_lib_path = function(lib) {
   si$loadedpath[row]
 }
 
-regdb_spec_files = function(libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
-  restore.point("regdb_load_specs")
+repdb_spec_files = function(libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
+  restore.point("repdb_load_specs")
   dir = sapply(libs, function(lib) {
-    d = system.file("regdb",package=lib)
+    d = system.file("repdb",package=lib)
     # Also detect path if lib was loaded via devtools
     if (is.null(d) | is.na(d) | d=="") {
       lib_path = get_lib_path(lib)
-      d = file.path(lib_path,"inst","regdb")
+      d = file.path(lib_path,"inst","repdb")
     }
     d
   })
@@ -45,15 +45,15 @@ regdb_spec_files = function(libs = c("repboxReg", "repboxArt","repboxDB","repbox
 }
 
 
-regdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
-  restore.point("regdb_load_specs")
+repdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
+  restore.point("repdb_load_specs")
   if (is.null(dir)) {
     dir = sapply(libs, function(lib) {
-      d = system.file("regdb",package=lib)
+      d = system.file("repdb",package=lib)
       # Also detect path if lib was loaded via devtools
       if (is.null(d) | is.na(d) | d=="") {
         lib_path = get_lib_path(lib)
-        d = file.path(lib_path,"inst","regdb")
+        d = file.path(lib_path,"inst","repdb")
       }
       d
     })
@@ -70,12 +70,12 @@ regdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repbo
     res
   })
   names(specs) = spec_names
-  old.specs = getOption("regdb.specs")
+  old.specs = getOption("repdb.specs")
   if (!is.null(old.specs)) {
     old.cols = setdiff(names(old.specs), names(specs))
     specs[old.cols] = old.specs[old.cols]
   }
 
-  options(regdb.specs = specs)
+  options(repdb.specs = specs)
   invisible(specs)
 }

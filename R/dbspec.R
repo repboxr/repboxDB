@@ -1,5 +1,5 @@
 # Functions to work with database field specifications
-# as used for regdb
+# as used for repdb
 
 # At some point can be put into a separate package
 
