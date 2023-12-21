@@ -51,7 +51,7 @@ repdb_make_stata_script_parcel = function(project_dir, file_df) {
     stata_file = list(script_file=script_df),
     stata_source = list(script_source = script_df)
   )
-  repdb_save_parcels(parcels, dir = file.path(project_dir, "repbox", "repdb") )
+  repdb_save_parcels(parcels, dir = file.path(project_dir, "repdb") )
   return(script_df)
 }
 
@@ -122,7 +122,7 @@ repbox_results_to_repdb = function(project_dir, script_df) {
   parcels$stata_run_cmd = list(stata_run_cmd = run_df)
   parcels$stata_run_log = list(stata_run_log = run_df)
 
-  repdb_save_parcels(parcels, dir = file.path(project_dir, "repbox", "repdb") )
+  repdb_save_parcels(parcels, dir = file.path(project_dir, "repdb") )
   invisible(parcels)
 }
 
@@ -163,7 +163,7 @@ repbox_file_to_repdb = function(project_dir, ignore="repbox_") {
     rename(file_path = file)
 
   parcels = list(repbox_file = list(repbox_file=file_df))
-  repdb_save_parcels(parcels,dir = file.path(project_dir, "repbox", "repdb"))
+  repdb_save_parcels(parcels,dir = file.path(project_dir,"repdb"))
   invisible(file_df)
 }
 
