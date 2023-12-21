@@ -1,5 +1,5 @@
 
-repdb_list_parcels = function(project_dir, metareg.dir = file.path(project_dir,"metareg"), other.dirs = paste0(project_dir,c("repdb"))) {
+repdb_list_parcels = function(project_dir, metareg.dir = file.path(project_dir,"metareg"), other.dirs = paste0(project_dir,c("/repdb"))) {
   dirs = list.dirs(metareg.dir,full.names = TRUE,recursive = FALSE)
   parcel.dirs = c(file.path(dirs, "repdb"), other.dirs)
   parcel.files = list.files(parcel.dirs,glob2rx("*.Rds"),full.names = TRUE)
