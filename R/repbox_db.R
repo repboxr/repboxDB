@@ -10,119 +10,12 @@ example = function() {
   rstudioapi::filesPaneNavigate("~/repbox/repboxDB/inst/repdb")
 }
 
-repbox_to_repdb = function(project_dir) {
+repbox_to_repdb = function(project_dir, parcels=list()) {
   restore.point("repbox_results_to_repdb")
   repdb_load_specs(libs="repboxDB")
   repdb.dir = file.path(project_dir, "repbox","repdb")
   if (!dir.exists(repdb.dir)) dir.create(repdb.dir)
   file_df = repbox_file_to_repdb(project_dir)
-  script_df = repdb_make_stata_script_parcel(project_dir, file_df)
-  parcels = repbox_results_to_repdb(project_dir, script_df)
-  invisible(parcels)
-}
-
-repdb_make_stata_script_parcel = function(project_dir, file_df) {
-  restore.point("repdb_make_script_parcels")
-
-  script_df = file_df %>%
-    ungroup() %>%
-    filter(file_type == "do") %>%
-    mutate(
-      sup_dir = paste0(project_dir, ifelse(in_org, "/org","/mod")),
-      long_path = paste0(sup_dir,"/", file_path ),
-      script_num = seq_len(n()),
-      file_exists = file.exists(long_path),
-      source_added = file_exists
-    )
-  text = rep(NA_character_, NROW(script_df))
-  num_lines = rep(NA_integer_, NROW(script_df))
-
-  for (i in seq_len(NROW(script_df))) {
-    if (script_df$file_exists[i]) {
-      txt = readLines(script_df$long_path[i],encoding = "UTF-8")
-      text[i] = merge.lines(txt)
-      num_lines[i] = length(txt)
-    }
-  }
-  script_df$num_lines = num_lines
-  script_df$text = text
-
-  parcels = list(
-    stata_file = list(script_file=script_df),
-    stata_source = list(script_source = script_df)
-  )
-  repdb_save_parcels(parcels, dir = file.path(project_dir, "repdb") )
-  return(script_df)
-}
-
-repbox_results_to_repdb = function(project_dir, script_df) {
-  restore.point("repbox_results_to_repdb")
-
-  parcels = list()
-
-  artid = basename(project_dir)
-
-  results.file = file.path(project_dir, "repbox", "stata","repbox_results.Rds")
-  res = readRDS.or.null(results.file)
-
-  if (is.null(res)) {
-    parcels = list()
-    return(parcels)
-  }
-
-  dotab = res$dotab
-  dotab$file_path = str.right.of(dotab$file, paste0("/",artid,"/mod/"))
-
-  if (!has.col(res$tab,"in_loop")) {
-    cat("\nNote there was no 'in_loop' col in repbox_results$tab\n")
-    res$tab$in_loop = NA_integer_
-  }
-
-  cmd_df = res$tab %>%
-    mutate(
-      artid = artid,
-      in_loop = in_loop==1,
-      in_program = is.true(in.program>=1)
-    ) %>%
-    rename(
-      prefix_cmd1 = colon_cmd1,
-      prefix_cmd2 = colon_cmd2,
-      num_runs = runs,
-      num_err_runs = errruns,
-      is_reg = is.regcmd
-    ) %>%
-    left_join(select(dotab, donum, file_path), by="donum")
-
-  repdb_check_data(cmd_df,"stata_cmd")
-  parcels$stata_cmd = list(stata_cmd = cmd_df)
-
-  run_df = res$run.df %>%
-    mutate(
-      artid = artid,
-      found_path = file_path_relative_to_supp(foundfile, paste0("/", artid, "/mod/"),wdir = wdir, supp.dir = paste0(project_dir, "/", artid, "/mod/"))
-    ) %>%
-    rename(
-
-      start_time = stime,
-      end_time = etime,
-      errcode = runerrcode,
-      errmsg = runerrmsg,
-      out_img_file = out.img.file
-    ) %>%
-    left_join(select(dotab, donum, file_path), by="donum") %>%
-    left_join(select(dotab, rootdonum = donum, root_file_path = file_path), by="rootdonum")
-
-  run_df$runid = seq_len(NROW(run_df))
-  run_df = left_join(run_df, select(script_df, file_path, script_num), by="file_path")
-
-
-  repdb_check_data(run_df,"stata_run_cmd")
-  repdb_check_data(run_df,"stata_run_log")
-
-  parcels$stata_run_cmd = list(stata_run_cmd = run_df)
-  parcels$stata_run_log = list(stata_run_log = run_df)
-
-  repdb_save_parcels(parcels, dir = file.path(project_dir, "repdb") )
   invisible(parcels)
 }
 
@@ -163,8 +56,8 @@ repbox_file_to_repdb = function(project_dir, ignore="repbox_") {
     rename(file_path = file)
 
   parcels = list(repbox_file = list(repbox_file=file_df))
-  repdb_save_parcels(parcels,dir = file.path(project_dir,"repdb"))
-  invisible(file_df)
+  repdb_save_parcels(parcels["repbox_file"],dir = file.path(project_dir,"repdb"))
+  invisible(parcels)
 }
 
 
