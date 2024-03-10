@@ -25,10 +25,17 @@ repbox_file_to_repdb = function(project_dir, ignore="repbox_") {
   artid = basename(project_dir)
   org_files = readRDS.or.null(file.path(project_dir, "repbox","org_files.Rds"))
   mod_files = readRDS.or.null(file.path(project_dir, "repbox","mod_files.Rds"))
+  if (!is.null(org_files)) {
+    org_files = mutate(org_files, type="org")  }
+
+  if (!is.null(mod_files)) {
+    mod_files = mutate(mod_files, type="mod") %>% filter(!startsWith(base,"repbox_"))
+  }
+
 
   file_df = bind_rows(
-    mutate(org_files, type="org"),
-    mutate(mod_files, type="mod") %>% filter(!startsWith(base,"repbox_"))
+    org_files,
+    mod_files
   )
 
   file_df = file_df %>%
