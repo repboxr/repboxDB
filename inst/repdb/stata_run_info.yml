@@ -1,8 +1,7 @@
 name: stata_run_info
 
 descr: |
-  Parsed info about all run stata commands. Corresponds to run.df in
-  our internal repbox data
+  Aggregate information about stata_run_cmd, aggregated on article level.
 
 unique_index:
   main_index: [artid]
