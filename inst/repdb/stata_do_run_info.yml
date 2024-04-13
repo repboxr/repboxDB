@@ -40,6 +40,12 @@ fields:
     type: int
     descr: Number of times any command was called
 
+  num_ok_runs:
+    type: int
+
+  num_no_dat_runs:
+    type: int
+
   num_runs_err:
     type: int
     descr: Number of runs with an error

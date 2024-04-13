@@ -19,18 +19,30 @@ fields:
     type: int
     descr: Total number of run commands
 
+  ok_runs:
+    type: int
+    descr: Runs without missing data nor error
+
+  no_dat_runs:
+    type: int
+    descr: Run commands that have missing data
+
   err_runs:
     type: int
-    descr: Number of run commands that have an error
+    descr: Run commands that have an error but no missing data
 
   reg_runs:
     type: int
     descr: Number of runs of regression commands
 
-  err_reg_runs:
-    type: int
-    descr: Number of runs of regression commands with error
-
   ok_reg_runs:
     type: int
     descr: Number of runs of regression commands without error
+
+  no_dat_reg_runs:
+    type: int
+    descr: Regression run that have missing data
+
+  err_reg_runs:
+    type: int
+    descr: Number of runs of regression commands with error
