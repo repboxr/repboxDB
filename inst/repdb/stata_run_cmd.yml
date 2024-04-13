@@ -54,6 +54,7 @@ fields:
 
   errcode:
     descr: Error code after running the file. A 0 indicated no error.
+    type: int
 
   out_img_file:
     descr: |
