@@ -17,7 +17,20 @@ fields:
     type: int
 
   orgline:
-    descr: Line in the original version of the script.
+    descr: |
+      Line in the original version of the script.
+      For delimit semicolon multiple orglines are possible. We then pick
+      the line where the cmd starts.
+    type: int
+
+  orgline_start:
+    descr: For semicolon delimit multiple orglines possible. The first orgline.
+    type: int
+
+  orgline_end:
+    descr: For semicolon delimit multiple orglines possible. The last orgline.
+    type: int
+
 
   cmd:
     descr: Stata command
