@@ -1,4 +1,26 @@
 
+repdb_parcel_table = function(parcels,parcel_name,tab_name=NA) {
+  parcel = parcels[[parcel_name]]
+  if (!is.na(tab_name)) {
+    parcel[[tab_name]]
+  } else if (length(parcel)>0) {
+    parcel[[1]]
+  } else {
+    NULL
+  }
+}
+
+repdb_add_parcels = function(all_parcels, new_parcels) {
+  all_parcels[names(new_parcels)] = new_parcels
+  all_parcels
+}
+
+
+repdb_has_parcel = function(project_dir, parcel_name, parcel_dir = file.path(project_dir, "repdb")) {
+  file.exists(file.path(parcel_dir, paste0(parcel_name, ".Rds")))
+}
+
+
 repdb_list_parcels = function(project_dir, metareg.dir = file.path(project_dir,"metareg"), other.dirs = paste0(project_dir,c("/repdb"))) {
   restore.point("repdb_list_parcels")
   dirs = list.dirs(metareg.dir,full.names = TRUE,recursive = FALSE)

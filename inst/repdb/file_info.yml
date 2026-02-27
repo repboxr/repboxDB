@@ -5,10 +5,9 @@ descr: |
 
 
 unique_index:
-  main_index: [artid, file_path]
+  main_index: [file_path]
 
 fields:
-  artid:
 
   file_path:
     descr: |

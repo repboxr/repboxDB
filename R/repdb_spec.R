@@ -10,10 +10,22 @@ repdb_field_names = function(table) {
   repdb_get_spec(table)$fields$field
 }
 
-repdb_get_spec = function(table) {
+repdb_has_spec = function(table) {
+  specs = getOption("repdb.specs")
+  if (is.null(specs))  repdb_load_specs()
+  table %in% names(specs)
+}
+
+repdb_get_spec = function(table, allow_missing=TRUE) {
   #restore.point("repdb_get_spec")
   specs = getOption("repdb.specs")
-  if (!table %in% names(specs)) repdb_load_specs()
+  if (is.null(specs))  repdb_load_specs()
+
+  if (!table %in% names(specs)) {
+    if (allow_missing) return(NULL)
+  } else {
+    repdb_load_specs()
+  }
   specs = getOption("repdb.specs")
   spec = specs[[table]]
   if (is.null(spec)) {

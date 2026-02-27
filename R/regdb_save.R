@@ -1,5 +1,11 @@
-# Transforms results from EJD into repdb format
-repdb_save_parcels = function(parcels, dir, check=TRUE) {
+repdb_save_parcel_table = function(dat, project_dir, parcel_name, tab_name=parcel_name, parcel_dir = file.path(project_dir,"repdb")) {
+  parcel = list(parcel=dat)
+  names(parcel) = tab_name
+  file = file.path(parcel_dir, paste0(parcel_name, ".Rds"))
+  saveRDS(parcel, file)
+}
+
+repdb_save_parcels = function(parcels, dir, check=TRUE, check_missing_spec=FALSE) {
   restore.point("repdb_save_parcels")
   for (name in names(parcels)) {
     parcel = parcels[[name]]
@@ -39,6 +45,6 @@ repdb_select_fields = function(dat, table,spec = repdb_get_spec(table), ignore=N
   dbspec_select_fields(dat, spec, ignore, null_as_empty)
 }
 
-repdb_check_data = function(dat, table,spec = repdb_get_spec(table)) {
+repdb_check_data = function(dat, table,spec = repdb_get_spec(table), check_missing_spec = TRUE) {
   dbspec_check_data(dat, spec)
 }
