@@ -40,7 +40,7 @@ get_lib_path = function(lib) {
   si$loadedpath[row]
 }
 
-repdb_spec_files = function(libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
+repdb_spec_files = function(libs = c("repboxDB","repboxCodeText")) {
   restore.point("repdb_load_specs")
   dir = sapply(libs, function(lib) {
     d = system.file("repdb",package=lib)

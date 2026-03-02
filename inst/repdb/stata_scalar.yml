@@ -3,16 +3,10 @@ name: stata_scalars
 descr: |
   Stored values of scalar variables in Stata runs
 unique_index:
-  main_index: [artid, runind]
+  main_index: [runind]
 
 fields:
   runid:
-    type: int
-
-  script_num:
-    type: int
-
-  line:
     type: int
 
   scalar_var:
