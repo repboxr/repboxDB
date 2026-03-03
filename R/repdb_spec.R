@@ -1,3 +1,13 @@
+# parcels with different names that use certain spec
+repdb_spec_map = function() {
+  c(
+    stata_file="script_file",r_file = "script_file",
+    stata_source = "script_source",r_source = "script_source",
+    stata_reg_run_info = "stata_run_info"
+  )
+}
+
+
 repdb_null_to_empty = function(df, table) {
   if (!is.null(df)) return(df)
   spec = spec = repdb_get_spec(table)
@@ -13,22 +23,30 @@ repdb_field_names = function(table) {
 repdb_has_spec = function(table) {
   specs = getOption("repdb.specs")
   if (is.null(specs))  repdb_load_specs()
-  table %in% names(specs)
+  if (table %in% names(specs)) return(TRUE)
+  map = repdb_spec_map()
+  table %in% names(map)
 }
 
 repdb_get_spec = function(table, allow_missing=TRUE) {
-  #restore.point("repdb_get_spec")
+  restore.point("repdb_get_spec")
   specs = getOption("repdb.specs")
   if (is.null(specs))  repdb_load_specs()
 
-  if (!table %in% names(specs)) {
-    if (allow_missing) return(NULL)
-  } else {
-    repdb_load_specs()
-  }
   specs = getOption("repdb.specs")
   spec = specs[[table]]
+
   if (is.null(spec)) {
+    map = repdb_spec_map()
+    spec_name = map[table]
+    if (!is.na(spec_name)) {
+      spec = specs[[spec_name]]
+    }
+  }
+
+  if (is.null(spec) & allow_missing) {
+    return(NULL)
+  } else if (is.null(spec)) {
     stop("The specification for table ", table, " was not loaded.")
   }
   spec
@@ -57,17 +75,11 @@ repdb_spec_files = function(libs = c("repboxDB","repboxCodeText")) {
 }
 
 
-repdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repboxDB","repboxCodeText","repboxMap")) {
+repdb_load_specs = function(dir = NULL, libs = c("repboxDB","repboxCodeText")) {
   restore.point("repdb_load_specs")
   if (is.null(dir)) {
     dir = sapply(libs, function(lib) {
-      d = system.file("repdb",package=lib)
-      # Also detect path if lib was loaded via devtools
-      if (is.null(d) | is.na(d) | d=="") {
-        lib_path = get_lib_path(lib)
-        d = file.path(lib_path,"inst","repdb")
-      }
-      d
+      d = robust_system_file("repdb",lib)
     })
   }
   spec_files = list.files(dir,glob2rx("*.yml"), full.names = TRUE)
@@ -82,6 +94,9 @@ repdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repbo
     res
   })
   names(specs) = spec_names
+
+
+
   old.specs = getOption("repdb.specs")
   if (!is.null(old.specs)) {
     old.cols = setdiff(names(old.specs), names(specs))
@@ -91,3 +106,14 @@ repdb_load_specs = function(dir = NULL, libs = c("repboxReg", "repboxArt","repbo
   options(repdb.specs = specs)
   invisible(specs)
 }
+
+robust_system_file = function(file, lib) {
+  sfile = system.file(file,package=lib)
+  # Also detect path if lib was loaded via devtools
+  if (is.null(sfile) | is.na(sfile) | sfile=="") {
+    lib_path = get_lib_path(lib)
+    sfile = file.path(lib_path,"inst",file)
+  }
+  sfile
+}
+

@@ -44,6 +44,7 @@ dbspec_make_empty = function(spec) {
 }
 
 dbspec_select_fields = function(dat, spec, ignore = NULL, null_as_empty=TRUE) {
+  restore.point("dbspec_select_fields")
   if (is.null(dat)) {
     if (!null_as_empty) return(NULL)
     dat = dbspec_make_empty(spec)

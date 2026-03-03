@@ -9,18 +9,13 @@ repdb_save_parcels = function(parcels, dir, check=TRUE, check_missing_spec=FALSE
   restore.point("repdb_save_parcels")
   for (name in names(parcels)) {
     parcel = parcels[[name]]
-    if (check) {
-      for (table in names(parcel)) {
-        repdb_check_data(parcel[[table]], table)
-      }
+    if (is.list(parcel) & !is.data.frame(parcel)) {
+      stop(paste0("parcel ", name, " is still in deprecated old list format. Change code"))
     }
-    tables = names(parcel)
-    norm_parcel = lapply(tables, function(table) {
-      dbspec_select_fields(parcel[[table]], repdb_get_spec(table))
-    })
-    names(norm_parcel) = tables
-
-
+    if (check) {
+        repdb_check_data(parcel, name)
+    }
+    norm_parcel = dbspec_select_fields(parcel, repdb_get_spec(name))
     file = file.path(dir,paste0(name,".Rds"))
     if (!dir.exists(dir)) {
       cat("\nCreate repdb directory ", dir,"\n.")
@@ -46,5 +41,6 @@ repdb_select_fields = function(dat, table,spec = repdb_get_spec(table), ignore=N
 }
 
 repdb_check_data = function(dat, table,spec = repdb_get_spec(table), check_missing_spec = TRUE) {
+  restore.point("repdb_check_data")
   dbspec_check_data(dat, spec)
 }

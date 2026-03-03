@@ -44,7 +44,16 @@ repdb_load_parcels = function(project_dir, parcel_names, parcels=NULL) {
   paths = parcel_df$path[rows[use]]
   new_parcels = lapply(paths, readRDS)
   names(new_parcels) = parcel_names[use]
+
+  # check old format and stop on error
+  for (name in names(new_parcels)){
+    parcel = new_parcels[[name]]
+    if (is.list(parcel) & !is.data.frame(parcel)) {
+      stop(paste0("Saved parcel ", name, " is still in deprecated old list format. Change code and re-run."))
+    }
+  }
+
+
   if (length(parcels)==0) return(new_parcels)
   c(parcels, new_parcels)
 }
-
