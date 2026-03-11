@@ -13,7 +13,7 @@ descr: |
   To generate (or update) the cmdpart table only the cmdline shall be needed.
 
 unique_index:
-  main_index: [artid, step, part]
+  main_index: [runid, part]
 
 index:
   index2: [tag, part]

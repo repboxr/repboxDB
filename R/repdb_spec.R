@@ -3,7 +3,8 @@ repdb_spec_map = function() {
   c(
     stata_file="script_file",r_file = "script_file",
     stata_source = "script_source",r_source = "script_source",
-    stata_reg_run_info = "stata_run_info"
+    stata_reg_run_info = "stata_run_info",
+    reg_cmdpart = "cmdpart", quasi_reg_cmdpart = "cmdpart"
   )
 }
 

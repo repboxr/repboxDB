@@ -5,11 +5,10 @@ descr: |
   our internal repbox data
 
 unique_index:
-  main_index: [artid, root_file_path, file_path, counter]
-  main_index2: [artid, runind]
+  main_index: [runind]
+  internal_index: [root_file_path, file_path, counter]
 
 fields:
-  artid:
 
   runid:
     type: int
