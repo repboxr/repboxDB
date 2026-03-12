@@ -4,7 +4,8 @@ repdb_spec_map = function() {
     stata_file="script_file",r_file = "script_file",
     stata_source = "script_source",r_source = "script_source",
     stata_reg_run_info = "stata_run_info",
-    reg_cmdpart = "cmdpart", quasi_reg_cmdpart = "cmdpart"
+    reg_cmdpart = "cmdpart", quasi_reg_cmdpart = "cmdpart",
+    reg_rb = "reg", regcoef_rb = "regcoef", regscalar_rb="regscalar", regstring_rb="regstring"
   )
 }
 

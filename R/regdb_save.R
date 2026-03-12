@@ -12,6 +12,10 @@ repdb_save_parcels = function(parcels, dir, check=TRUE, check_missing_spec=FALSE
     if (is.list(parcel) & !is.data.frame(parcel)) {
       stop(paste0("parcel ", name, " is still in deprecated old list format. Change code"))
     }
+    if (NCOL(parcel)==0 | is.null(parcel)) {
+      parcel = repdb_null_to_empty(NULL, name)
+    }
+
     if (check) {
         repdb_check_data(parcel, name)
     }

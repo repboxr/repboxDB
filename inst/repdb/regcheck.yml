@@ -3,6 +3,8 @@ name: regcheck
 descr: |
   Check on whether regression did run as expected.
 
+  Not yet really widely used...
+
 unique_index:
   main_index: [runid, variant]
 
