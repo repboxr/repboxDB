@@ -22,6 +22,9 @@ fields:
   label:
     descr: Label of the regression term / variable
 
+  eq:
+    descr: Stata regression commands that run multiple regression specify the actual regression in a field eq. The unique index for a coeffient is then eq and cterm together. E.g. we may have cterm (Intercept) twice for different values of eq.
+
   coef:
     descr: Estimated coefficient
     type: num

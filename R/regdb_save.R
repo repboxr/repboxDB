@@ -46,5 +46,8 @@ repdb_select_fields = function(dat, table,spec = repdb_get_spec(table), ignore=N
 
 repdb_check_data = function(dat, table,spec = repdb_get_spec(table), check_missing_spec = TRUE) {
   restore.point("repdb_check_data")
+  if (is.null(spec)) {
+    stop(paste0("No repboxDB spec defined for parcel ",table, ".\nAdd in repboxDB/inst/repdb or for a synonym add in the function repdb_spec_map in R/repdb_spec.R. Then re-install repboxDB."))
+  }
   dbspec_check_data(dat, spec)
 }
